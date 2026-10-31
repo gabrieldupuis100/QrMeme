@@ -1,72 +1,195 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#17172b">
-  <title>Le plan B — 100 $ de complicité</title>
-  <style>
-    :root { --bg:#17172b; --card:#24243d; --ink:#fff9f0; --muted:#c8c6dc; --lime:#c8ff69; --pink:#ff86b7; }
-    * { box-sizing:border-box; }
-    body {
-      margin:0; min-height:100vh; padding:22px; display:grid; place-items:center;
-      color:var(--ink); font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
-      background:radial-gradient(ellipse at 15% 10%,#47406f 0,transparent 38%),
-                 radial-gradient(ellipse at 90% 90%,#31534b 0,transparent 34%),var(--bg);
-    }
-    main { width:min(100%,590px); padding:clamp(25px,6vw,45px); border:1px solid #ffffff20;
-      border-radius:28px; background:#24243ded; box-shadow:0 24px 80px #0006; text-align:center; }
-    .stamp { display:inline-block; padding:7px 12px; border:1px dashed var(--lime); color:var(--lime);
-      border-radius:8px; font-size:.76rem; font-weight:850; letter-spacing:.12em; transform:rotate(-2deg); }
-    .hero { margin:20px 0 8px; font-size:clamp(4.5rem,18vw,7rem); line-height:1; }
-    h1 { font-size:clamp(2rem,8vw,3.3rem); line-height:1.03; margin:12px 0 15px; }
-    p { color:var(--muted); font-size:1.06rem; line-height:1.65; }
-    .highlight { color:var(--pink); font-weight:800; }
-    button { border:0; border-radius:14px; padding:14px 19px; margin:10px 5px 0; font:inherit;
-      font-weight:850; cursor:pointer; background:var(--lime); color:#17172b; }
-    button.secondary { background:#ffffff12; border:1px solid #ffffff35; color:var(--ink); }
-    button:hover { filter:brightness(1.07); transform:translateY(-1px); }
-    #joke { min-height:4.8em; margin:20px 0 0; color:var(--ink); font-weight:750; }
-    .fine { font-size:.83rem; color:#a9a7c4; margin-top:25px; }
-    .divider { width:72px; height:4px; border-radius:9px; background:var(--pink); margin:22px auto; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Un billet, un prétexte, une invitation</title>
+<style>
+  :root{
+    --bg:#f7f1e5; --panel:#fffdf8; --ink:#43372c; --soft:#8a7a68;
+    --rose:#c98a7d; --sage:#8ba888; --gold:#c9a227;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; font-family:Georgia,'Times New Roman',serif; color:var(--ink);
+    background:
+      radial-gradient(ellipse at 15% -10%, rgba(201,138,125,.20), transparent 55%),
+      radial-gradient(ellipse at 90% 110%, rgba(139,168,136,.20), transparent 50%),
+      var(--bg);
+    min-height:100vh; display:flex; flex-direction:column; align-items:center;
+    padding:24px 16px 90px;
+  }
+  .card{
+    max-width:640px; width:100%; background:var(--panel);
+    border:1px solid rgba(67,55,44,.14); border-radius:20px;
+    padding:36px 32px 38px; margin-top:5vh;
+    box-shadow:0 14px 44px rgba(67,55,44,.13);
+  }
+  .heart{ text-align:center; font-size:1.6rem; margin-bottom:6px; }
+  h1{ text-align:center; font-size:1.8rem; line-height:1.3; margin:.15em 0 .3em; font-weight:normal; }
+  h1 em{ color:var(--rose); }
+  .sub{ text-align:center; color:var(--soft); font-style:italic; margin:0; line-height:1.6; }
+  button.cta{
+    display:block; margin:28px auto 4px; cursor:pointer;
+    font-family:inherit; font-size:1.08rem;
+    color:#fff; background:linear-gradient(180deg, #d69a8c, var(--rose));
+    border:none; border-radius:999px; padding:14px 32px;
+    box-shadow:0 6px 20px rgba(201,138,125,.4);
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  button.cta:hover{ transform:translateY(-2px); box-shadow:0 10px 26px rgba(201,138,125,.5); }
+  #stage{ opacity:0; transition:opacity .9s ease; }
+  #stage.visible{ opacity:1; }
+  p{ line-height:1.75; font-size:1.07rem; }
+  .chorus{
+    text-align:center; font-style:italic;
+    border-top:1px solid rgba(67,55,44,.12); border-bottom:1px solid rgba(67,55,44,.12);
+    padding:18px 10px; margin:26px 0;
+  }
+  .chorus .note{ display:block; margin-top:9px; font-style:normal; font-size:.9rem; color:var(--soft); }
+  .open{
+    background:rgba(139,168,136,.12); border-radius:14px;
+    padding:16px 20px; margin:24px 0;
+  }
+  .sig{ text-align:right; font-style:italic; color:var(--rose); margin-top:22px; }
+  footer{ margin-top:22px; text-align:center; color:var(--soft); font-size:.85rem; font-style:italic; }
+  #nowPlaying{
+    position:fixed; left:50%; transform:translateX(-50%); bottom:16px;
+    display:flex; align-items:center; gap:10px;
+    background:rgba(255,253,248,.95); border:1px solid rgba(201,138,125,.55);
+    border-radius:999px; padding:8px 16px; font-size:.88rem; color:var(--ink);
+    box-shadow:0 8px 24px rgba(67,55,44,.18); z-index:10; max-width:94vw;
+  }
+  #nowPlaying a{ color:var(--rose); text-decoration:none; }
+  #muteBtn{ background:none; border:none; cursor:pointer; font-size:1rem; padding:2px; }
+  .eq{ display:inline-flex; gap:2px; align-items:flex-end; height:12px; }
+  .eq span{ width:3px; background:var(--rose); animation:eq 0.9s ease-in-out infinite; }
+  .eq span:nth-child(2){ animation-delay:.25s; } .eq span:nth-child(3){ animation-delay:.5s; }
+  @keyframes eq{ 0%,100%{ height:4px; } 50%{ height:12px; } }
+</style>
 </head>
 <body>
-  <main>
-    <div class="stamp">DOCUMENT TOP SECRET · PLAN B</div>
-    <div class="hero" aria-hidden="true">🕵️‍♂️💸</div>
-    <h1>Alors…<br>pas de texto ? 😏</h1>
-    <p>
-      Aucun problème : le <span class="highlight">100 $ de complicité</span> n'est pas remboursable,
-      mais il n'y a absolument aucune obligation de l'utiliser.
-    </p>
-    <div class="divider"></div>
-    <p>Tu es maintenant sur le site officiel du <strong>Comité des occasions manquées mais pas dramatiques</strong>.</p>
-    <button id="jokeButton" type="button">Lancer le protocole ridicule</button>
-    <p id="joke" aria-live="polite">Attention : cette opération peut provoquer un sourire involontaire.</p>
-    <button class="secondary" id="finalButton" type="button">J'ai une question existentielle…</button>
-    <p id="final" aria-live="polite"></p>
-    <p class="fine">Si tu as envie de m'écrire, tu peux toujours le faire. Sinon, merci d'avoir participé à cette expérience scientifique douteuse. ✌️</p>
-  </main>
-  <script>
-    const jokes = [
-      "PROTOCOLE ACTIVÉ : un canard en veston vient d'être nommé responsable des relations publiques. 🦆",
-      "Résultat de l'analyse : 97 % de chances que ce site ait été codé beaucoup trop tard le soir.",
-      "Le comité a délibéré pendant 0,4 seconde : tu mérites une médaille pour avoir scanné ce truc. 🏅",
-      "Erreur 404 : le flirt parfait est introuvable. Veuillez réessayer après une collation.",
-      "Un billet de 100 $, une napkin et un QR code… Il ne manque plus qu'un budget de film de Christopher Nolan."
-    ];
-    const joke = document.getElementById("joke");
-    document.getElementById("jokeButton").addEventListener("click", () => {
-      let i;
-      do { i = Math.floor(Math.random() * jokes.length); }
-      while (jokes.length > 1 && jokes[i] === joke.textContent);
-      joke.textContent = jokes[i];
-    });
-    document.getElementById("finalButton").addEventListener("click", () => {
-      document.getElementById("final").textContent =
-        "La réponse officielle : oui, c'est probablement la façon la plus compliquée de dire « ça me ferait plaisir de jaser avec toi ». 😅";
-    });
-  </script>
+
+<!-- ÉCRAN D'ENTRÉE -->
+<div class="card" id="entry">
+  <div class="heart">🌿</div>
+  <h1>Ce billet n'était pas un vrai 100&nbsp;$.</h1>
+  <p class="sub">Mais ce qu'il voulait te dire, lui, était vrai.<br>Et il vient avec une chanson.</p>
+  <button class="cta" id="enterBtn">Découvrir ce qu'il voulait dire 🎵</button>
+</div>
+
+<!-- CONTENU -->
+<div class="card" id="stage" hidden>
+  <div class="heart">🌿</div>
+  <h1>Salut, moi c'est <em>Gabriel</em>.</h1>
+
+  <p>Si tu tiens ce billet entre tes mains, c'est que je t'ai remarquée —
+  et que j'ai pas trouvé le courage, ou le bon moment, pour te le dire en personne.</p>
+
+  <p>Alors plutôt que de laisser passer l'instant, j'ai choisi un petit geste
+  un peu fou, un peu doux&nbsp;: un faux billet, un vrai prétexte.</p>
+
+  <div class="chorus">
+    «&nbsp;Hey, I just met you, and this is crazy…&nbsp» 🎵
+    <span class="note">La chanson dit le reste mieux que moi. Mon numéro est écrit sur le billet — si l'envie te dit, texte-moi. Call me maybe. 😉</span>
+  </div>
+
+  <div class="open">
+    <p style="margin:0;">Et si c'est non, c'est vraiment correct aussi.
+    Aucune attente, aucune pression — tu repartiras au moins avec une histoire
+    drôle à raconter, et moi avec le sourire de l'avoir essayé.</p>
+  </div>
+
+  <p>Merci d'avoir scanné, merci d'être passée par ici.
+  La porte est ouverte — la suite, si suite il y a, t'appartient.</p>
+
+  <p class="sig">— Gabriel</p>
+</div>
+
+<footer>Un petit moment de complicité, offert sans obligation. ✌️</footer>
+
+<div id="nowPlaying" hidden>
+  <span class="eq"><span></span><span></span><span></span></span>
+  <span>Carly Rae Jepsen — Call Me Maybe</span>
+  <button id="muteBtn" title="Son on/off">🔊</button>
+  <a href="https://www.youtube.com/watch?v=fWNaR-rxAic" target="_blank" rel="noopener" title="Ouvrir sur YouTube">↗</a>
+  <span id="fallbackMsg" hidden style="color:#b06a5a;">&nbsp;— lecture bloquée ici, <a href="https://www.youtube.com/watch?v=fWNaR-rxAic" target="_blank" rel="noopener" style="color:#b06a5a;text-decoration:underline;">écoute sur YouTube</a></span>
+</div>
+
+<div id="playerWrap" style="position:absolute; left:-9999px; top:-9999px; width:2px; height:2px; overflow:hidden;">
+  <div id="player"></div>
+</div>
+
+<script src="https://www.youtube.com/iframe_api"></script>
+<script>
+  var VIDEO_ID = 'fWNaR-rxAic';
+  var player = null, playerReady = false, apiReady = false, pendingPlay = false, plainMode = false, muted = false;
+  var IS_FILE = location.protocol === 'file:';
+
+  function plainIframe(){
+    var wrap = document.getElementById('playerWrap');
+    wrap.innerHTML = '<iframe width="2" height="2" src="https://www.youtube.com/embed/' + VIDEO_ID + '?autoplay=1&loop=1&playlist=' + VIDEO_ID + '&rel=0" frameborder="0" allow="autoplay; encrypted-media"></iframe>';
+    plainMode = true;
+    var mb = document.getElementById('muteBtn');
+    if (mb) mb.style.display = 'none';
+  }
+
+  function createPlayer(){
+    if (IS_FILE){ plainIframe(); return; }
+    try{
+      player = new YT.Player('player', {
+        videoId: VIDEO_ID,
+        playerVars:{ autoplay:1, loop:1, playlist:VIDEO_ID, rel:0, controls:0, modestbranding:1 },
+        events:{
+          'onReady': function(e){ playerReady = true; try{ e.target.setVolume(70); }catch(_){ } e.target.playVideo(); },
+          'onError': function(){ showFallback(); }
+        }
+      });
+      setTimeout(function(){
+        if (!playerReady && !plainMode){
+          try{ if (player && player.destroy) player.destroy(); }catch(_){ }
+          plainIframe();
+        }
+      }, 7000);
+    }catch(_){ plainIframe(); }
+  }
+
+  function onYouTubeIframeAPIReady(){
+    apiReady = true;
+    if (pendingPlay){ pendingPlay = false; createPlayer(); }
+  }
+
+  setTimeout(function(){
+    if (pendingPlay && !playerReady && !plainMode){
+      if (IS_FILE){ pendingPlay = false; plainIframe(); }
+      else{ showFallback(); }
+    }
+  }, 8000);
+
+  function showFallback(){
+    var msg = document.getElementById('fallbackMsg');
+    if (msg){ msg.hidden = false; }
+  }
+
+  document.getElementById('enterBtn').addEventListener('click', function(){
+    var entry = document.getElementById('entry');
+    var stage = document.getElementById('stage');
+    entry.style.display = 'none';
+    stage.hidden = false;
+    requestAnimationFrame(function(){ stage.classList.add('visible'); });
+    document.getElementById('nowPlaying').hidden = false;
+    if (player){ try{ player.playVideo(); }catch(_){ } }
+    else if (IS_FILE){ plainIframe(); }
+    else if (apiReady){ createPlayer(); }
+    else{ pendingPlay = true; }
+  });
+
+  document.getElementById('muteBtn').addEventListener('click', function(){
+    if (!playerReady) return;
+    if (muted){ player.unMute(); this.textContent = '🔊'; }
+    else{ player.mute(); this.textContent = '🔇'; }
+    muted = !muted;
+  });
+</script>
 </body>
 </html>
